@@ -7,7 +7,7 @@
 
 ## Objective
 
-This project demonstrates how to provision and deploy a serverless architecture using AWS CDK and automate it using GitHub Actions. Although CodePipeline was the intended CI/CD tool, it could not be used due to account limitations so GitHub Actions was implemented as a working alternative.
+This project demonstrates how to provision and deploy a serverless architecture using AWS CDK and automate it using GitHub Actions. Although CodePipeline was the intended CI/CD tool, it could not be used due to account limitations, so GitHub Actions was implemented as a working alternative.
 
 ---
 
@@ -16,11 +16,11 @@ This project demonstrates how to provision and deploy a serverless architecture 
 - **Language**: TypeScript (AWS CDK)
 - **Infrastructure as Code**: AWS CDK
 - **CI/CD**: GitHub Actions
-- **Services Used**:
+- **AWS Services Used**:
   - AWS Lambda (Node.js)
   - DynamoDB
   - API Gateway
-  - S3 (for artifacts)
+  - S3 (for storing build artifacts)
   - CloudFormation
 
 ---
@@ -33,91 +33,109 @@ A Lambda-based API that allows storing and retrieving transaction data:
 - `TransactionsTable`: DynamoDB table for transaction records.
 - `API Gateway`: REST endpoint integrated with Lambda.
 
+**Diagram:**  
+![Lambda Diagram](screenshots/lambda_diagram.png)
+
 ---
 
 ## Local Development & Deployment
 
-### 1. Prerequisites
+### Prerequisites
 
-- AWS CLI configured with valid credentials
+- AWS CLI configured with credentials
 - AWS CDK installed
 - Node.js & NPM
 
-### 2. Install dependencies
+### Steps
+
+1. Install dependencies
 
 ```bash
 npm install -g aws-cdk
 npm install
 ```
 
-### 3. Bootstrap your environment (first-time only)
+2. Bootstrap your environment (only once)
 
 ```bash
 cdk bootstrap
 ```
 
-### 4. Deploy the CDK Stack
+3. Deploy the CDK stack
 
 ```bash
 cdk deploy
 ```
 
+**Screenshots:**  
+- Lambda Function:  
+  ![Lambda](screenshots/cdk_lambda_created.png)
+- DynamoDB Table:  
+  ![DynamoDB](screenshots/cdk_dynamodb_table_created.png)
+- S3 Bucket:  
+  ![S3](screenshots/cdk_s3_bucket_created.png)
+
 ---
 
 ## CI/CD via GitHub Actions
 
-Due to AWS account restrictions, we could not activate **CodeBuild** or **CodePipeline**. As a workaround, GitHub Actions was used to automate deployment.
+Since AWS CodeBuild and CodePipeline could not be activated (explained below), we used GitHub Actions for deployment automation.
 
-### Secrets Configuration
+### Secrets Setup
 
-In GitHub repository:
-- Go to **Settings > Secrets and variables > Actions**
+- Go to GitHub > Settings > Secrets and variables > Actions
 - Add the following secrets:
   - `AWS_ACCESS_KEY_ID`
   - `AWS_SECRET_ACCESS_KEY`
 
-### Workflow File
+**Screenshot:**  
+![GitHub Secrets](screenshots/github-actions.png)
 
-Location: `.github/workflows/deploy.yml`
+### Workflow Logic
 
-Main steps:
+File: `.github/workflows/deploy.yml`  
+Triggered on every push to `main` branch.
+
+Steps:
 1. Install dependencies
-2. Bootstrap (if needed)
-3. Run `cdk deploy`
+2. Bootstrap CDK
+3. Deploy the stack
 
-Workflow is triggered on every push to the `main` branch.
+**Screenshot:**  
+![CDK Deploy GitHub Actions](screenshots/cdk_deploy_success.png)
 
 ---
 
-## Why AWS CodePipeline Could Not Be Used
+## Why CodePipeline Could Not Be Used
 
-Despite being on a verified AWS account with free tier, AWS CodePipeline and CodeBuild could **not be activated** due to the following error:
+Despite the AWS account being verified, trying to use CodeBuild inside CodePipeline produced this error:
 
 ```
 InvalidInputException: Could not retrieve the Payer ID.
 Reason: Subscription to CodeBuild, ProductCode CodeBuild, required.
 ```
 
-A support ticket was opened with AWS (Case ID: `175278241700380`). Until the issue is resolved, GitHub Actions was used as the reliable CI/CD tool.
+**Screenshot:**  
+![AWS Error](screenshots/AWS-ERROR.png)
+
+A support ticket was opened to AWS:  
+![Ticket Created](screenshots/ticket-created.png)
+
+GitHub Actions was used instead.
 
 ---
 
-## Successful GitHub Actions Deployment
+## Deployment Success
 
-Sample output:
-```
-✅ BankingInsightsStack
-✅ Deployment time: 37.35s
-Outputs:
-BankingInsightsStack.Endpoint = https://your-api.execute-api.us-east-1.amazonaws.com/prod/transactions
-```
+The GitHub Actions successfully deployed the CDK stack. Below is the confirmation and sample test:
 
-You can test the deployed endpoint using:
+**Screenshot:**  
+![API Test](screenshots/testing_api.png)
+
+Sample command to test:
 
 ```bash
-curl -X POST https://your-api.execute-api.us-east-1.amazonaws.com/prod/transactions \
-  -H "Content-Type: application/json" \
-  -d '{"id": "001", "amount": 100, "type": "deposit"}'
+curl -X POST https://your-api.execute-api.us-east-1.amazonaws.com/prod/transactions   -H "Content-Type: application/json"   -d '{"id": "001", "amount": 100, "type": "deposit"}'
 ```
 
 ---
@@ -125,5 +143,3 @@ curl -X POST https://your-api.execute-api.us-east-1.amazonaws.com/prod/transacti
 ## GitHub Repo
 
 [View on GitHub](https://github.com/TwinkleM97/Assignment2-CI-CD)
-
----
