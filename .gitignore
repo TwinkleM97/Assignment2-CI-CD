@@ -1,0 +1,30 @@
+# Node dependencies
+node_modules/
+**/node_modules/
+
+# CDK generated files
+cdk.out/
+cdk.context.json
+
+# VS Code settings
+.vscode/
+
+# AWS credentials (if any)
+.aws/
+
+# Lambda build outputs
+lambda/node_modules/
+lambda/package-lock.json
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+*.swp
+
+# Test outputs
+response.json
