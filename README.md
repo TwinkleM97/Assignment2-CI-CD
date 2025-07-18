@@ -20,6 +20,9 @@ The solution includes:
 ```bash
 BANKING-INSIGHTS-A2/
 │
+├── bin/
+│   └── banking-insights.ts      # Bootstraps & launches CDK app
+│  
 ├── lambda/                      # Lambda function code
 │   └── processTransactions.js
 │
