@@ -35,3 +35,5 @@ jobs:
 
       - name: Deploy CDK Stack
         run: cdk deploy --require-approval never
+
+        # This step will deploy the CDK stack without requiring manual approval.
