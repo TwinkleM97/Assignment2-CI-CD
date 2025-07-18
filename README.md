@@ -15,7 +15,7 @@ The solution includes:
 
 ---
 
-## 🛠 Project Structure
+## Project Structure
 
 ```bash
 BANKING-INSIGHTS-A2/
@@ -36,7 +36,16 @@ BANKING-INSIGHTS-A2/
 ├── test_api.sh                 # Script to test deployed API
 └── debug.sh                    # Helper for local testing
 ```
-
+---
+## Technologies Used  
+- **AWS CDK (TypeScript)**
+- **Amazon S3**
+- **AWS Lambda**
+- **Amazon DynamoDB**
+- **API Gateway**
+- **AWS CodePipeline + CodeBuild**
+- **GitHub (Source)**
+- **Postman** for API testing
 ---
 
 ## Resources Created
