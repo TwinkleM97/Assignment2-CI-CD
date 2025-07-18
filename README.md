@@ -1,145 +1,120 @@
+# Banking Insights CI/CD Pipeline - Assignment 2
 
-# Assignment 2 - CI/CD with AWS CDK and CodePipeline  
-**Student Name**: Twinkle Mishra  
-**Student ID**: 8894858
-
----
+**Name:** Twinkle Mishra  
+**Student ID:** 8894858  
 
 ## Objective
 
-This project demonstrates how to provision and deploy a serverless architecture using AWS CDK and automate it using GitHub Actions. Although CodePipeline was the intended CI/CD tool, it could not be used due to account limitations, so GitHub Actions was implemented as a working alternative.
+This project demonstrates how to use the AWS Cloud Development Kit (CDK) with AWS CodePipeline to deploy cloud infrastructure following Infrastructure as Code (IaC) principles.
+
+The solution includes:
+- An **S3 bucket** to store static artifacts.
+- A **Lambda function** for processing transactions.
+- A **DynamoDB table** to persist data.
+- A **CI/CD pipeline** using CodePipeline with GitHub integration, CodeBuild, and CloudFormation deployment.
 
 ---
 
-## Stack Overview
-
-- **Language**: TypeScript (AWS CDK)
-- **Infrastructure as Code**: AWS CDK
-- **CI/CD**: GitHub Actions
-- **AWS Services Used**:
-  - AWS Lambda (Node.js)
-  - DynamoDB
-  - API Gateway
-  - S3 (for storing build artifacts)
-  - CloudFormation
-
----
-
-## Application Architecture
-
-A Lambda-based API that allows storing and retrieving transaction data:
-
-- `TransactionProcessor`: Lambda function written in Node.js.
-- `TransactionsTable`: DynamoDB table for transaction records.
-- `API Gateway`: REST endpoint integrated with Lambda.
-
-**Diagram:**  
-![Lambda Diagram](screenshots/lambda_diagram.png)
-
----
-
-## Local Development & Deployment
-
-### Prerequisites
-
-- AWS CLI configured with credentials
-- AWS CDK installed
-- Node.js & NPM
-
-### Steps
-
-1. Install dependencies
+## 🛠 Project Structure
 
 ```bash
-npm install -g aws-cdk
-npm install
-```
-
-2. Bootstrap your environment (only once)
-
-```bash
-cdk bootstrap
-```
-
-3. Deploy the CDK stack
-
-```bash
-cdk deploy
-```
-
-**Screenshots:**  
-- Lambda Function:  
-  ![Lambda](screenshots/cdk_lambda_created.png)
-- DynamoDB Table:  
-  ![DynamoDB](screenshots/cdk_dynamodb_table_created.png)
-- S3 Bucket:  
-  ![S3](screenshots/cdk_s3_bucket_created.png)
-
----
-
-## CI/CD via GitHub Actions
-
-Since AWS CodeBuild and CodePipeline could not be activated (explained below), we used GitHub Actions for deployment automation.
-
-### Secrets Setup
-
-- Go to GitHub > Settings > Secrets and variables > Actions
-- Add the following secrets:
-  - `AWS_ACCESS_KEY_ID`
-  - `AWS_SECRET_ACCESS_KEY`
-
-**Screenshot:**  
-![GitHub Secrets](screenshots/github-actions.png)
-
-### Workflow Logic
-
-File: `.github/workflows/deploy.yml`  
-Triggered on every push to `main` branch.
-
-Steps:
-1. Install dependencies
-2. Bootstrap CDK
-3. Deploy the stack
-
-**Screenshot:**  
-![CDK Deploy GitHub Actions](screenshots/cdk_deploy_success.png)
-
----
-
-## Why CodePipeline Could Not Be Used
-
-Despite the AWS account being verified, trying to use CodeBuild inside CodePipeline produced this error:
-
-```
-InvalidInputException: Could not retrieve the Payer ID.
-Reason: Subscription to CodeBuild, ProductCode CodeBuild, required.
-```
-
-**Screenshot:**  
-![AWS Error](screenshots/AWS-ERROR.png)
-
-A support ticket was opened to AWS:  
-![Ticket Created](screenshots/ticket-created.png)
-
-GitHub Actions was used instead.
-
----
-
-## Deployment Success
-
-The GitHub Actions successfully deployed the CDK stack. Below is the confirmation and sample test:
-
-**Screenshot:**  
-![API Test](screenshots/testing_api.png)
-
-Sample command to test:
-
-```bash
-curl -X POST https://your-api.execute-api.us-east-1.amazonaws.com/prod/transactions   -H "Content-Type: application/json"   -d '{"id": "001", "amount": 100, "type": "deposit"}'
+BANKING-INSIGHTS-A2/
+│
+├── lambda/                      # Lambda function code
+│   └── processTransactions.js
+│
+├── lib/
+│   └── banking-insights-stack.ts  # CDK Stack Definition
+│
+├── screenshots/                # Screenshots for documentation
+│
+├── buildspec.yml               # CodeBuild configuration
+├── README.md                   # Project documentation
+├── test_api.sh                 # Script to test deployed API
+└── debug.sh                    # Helper for local testing
 ```
 
 ---
 
-## GitHub Repo
+## Resources Created
 
-[View on GitHub](https://github.com/TwinkleM97/Assignment2-CI-CD)
+### CDK Bootstrap
+CDK environment initialized using `cdk bootstrap`.
+
+![cdk-bootstrap](screenshots/cdk-bootstrap.png)
+
+### CDK Synth Output
+Synthesized CloudFormation templates using `cdk synth`.
+
+![cdk-synth](screenshots/cdk-synth.png)
+
+### CDK Deploy Success
+Stack deployed using `cdk deploy`.
+
+![cdk_deploy_success](screenshots/cdk_deploy_success.png)
+
+### S3 Bucket Created
+An S3 bucket for storing data was created.
+
+![cdk_s3_bucket_created](screenshots/cdk_s3_bucket_created.png)
+
+### Lambda Function Created
+The transaction processing Lambda function was created.
+
+![cdk_lambda_created](screenshots/cdk_lambda_created.png)
+
+### DynamoDB Table Created
+A DynamoDB table was provisioned for storing transaction data.
+
+![cdk_dynamodb_table_created](screenshots/cdk_dynamodb_table_created.png)
+
+---
+
+## CI/CD Pipeline
+
+### Pipeline Execution (Source → Build → Deploy)
+AWS CodePipeline successfully pulled from GitHub, built via CodeBuild, and deployed using CloudFormation.
+
+![pipeline-success](screenshots/pipeline-success.png)
+![execution](screenshots/execution.png)
+
+---
+
+## API Gateway Testing
+
+### POST Transaction to API
+Tested POST API using Postman or curl.
+
+![post-api-tested](screenshots/post-api-tested.png)
+
+### GET Transactions from API
+Validated GET endpoint response.
+
+![get-api-tested](screenshots/get-api-tested.png)
+
+---
+
+## Manual Testing with Script
+Executed `test_api.sh` to automate testing of the `/transactions` endpoint.
+
+![testing_api](screenshots/testing_api.png)
+
+---
+
+## Architecture Diagram
+Visual overview of deployed infrastructure.
+
+![lambda_diagram](screenshots/lambda_diagram.png)
+
+---
+
+## Summary
+
+- Developed CDK project in TypeScript to provision S3, Lambda, and DynamoDB.
+- Bootstrapped and deployed infrastructure using `cdk deploy`.
+- Integrated GitHub repo with CodePipeline.
+- Defined build process using `buildspec.yml`.
+- Validated endpoints manually and via shell scripts.
+- Documented using screenshots for evaluation.
+
+---
