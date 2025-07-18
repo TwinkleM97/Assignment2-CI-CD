@@ -40,4 +40,5 @@ artifacts:
   files:
     - '**/*'
   name: banking-insights-build-artifacts
-      
+        # This step will deploy the CDK stack without requiring manual approval.
+        # The `--verbose` flag provides detailed output during deployment.
