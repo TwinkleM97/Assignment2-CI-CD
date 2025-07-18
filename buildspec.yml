@@ -1,4 +1,5 @@
 version: 0.2
+
 phases:
   install:
     runtime-versions:
@@ -9,6 +10,7 @@ phases:
       - npm install
       - echo "Installed CDK version:"
       - cdk --version
+
   pre_build:
     commands:
       - echo "Pre-build phase started on `date`"
@@ -18,6 +20,7 @@ phases:
       - echo "Node version: $(node --version)"
       - echo "NPM version: $(npm --version)"
       - echo "AWS CLI version: $(aws --version)"
+
   build:
     commands:
       - echo "Build phase started on `date`"
@@ -26,6 +29,7 @@ phases:
       - echo "Synthesizing CDK stack..."
       - cdk synth
       - echo "CDK synthesis completed successfully"
+
   post_build:
     commands:
       - echo "Post-build phase started on `date`"
@@ -34,6 +38,7 @@ phases:
       - echo "CDK deployment completed successfully"
       - echo "Getting stack outputs..."
       - aws cloudformation describe-stacks --stack-name BankingInsightsStack --query "Stacks[0].Outputs" --output table
+
 artifacts:
   files:
     - '**/*'
