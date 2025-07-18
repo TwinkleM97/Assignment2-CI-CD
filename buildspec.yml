@@ -5,40 +5,17 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - echo "Installing AWS CDK and dependencies..."
+      - echo "Installing dependencies..."
       - npm install -g aws-cdk@latest
       - npm install
-      - echo "Installed CDK version:"
-      - cdk --version
-
-  pre_build:
-    commands:
-      - echo "Pre-build phase started on $(date)"
-      - echo "Current working directory: $(pwd)"
-      - ls -la
-      - echo "CDK version: $(cdk --version)"
-      - echo "Node version: $(node --version)"
-      - echo "NPM version: $(npm --version)"
-      - echo "AWS CLI version: $(aws --version)"
 
   build:
     commands:
-      - echo "Build phase started on $(date)"
+      - echo "Building project..."
       - npm run build
-      - echo "Synthesizing CDK stack..."
+      - echo "Synthesizing CDK..."
       - cdk synth
-
-  post_build:
-    commands:
-      - echo "Post-build phase started on $(date)"
-      - echo "Deploying CDK stack..."
-      - cdk deploy --require-approval never --verbose
-      - echo "Getting stack outputs..."
-      - aws cloudformation describe-stacks --stack-name BankingInsightsStack --query "Stacks[0].Outputs" --output table
 
 artifacts:
   files:
     - '**/*'
-  name: banking-insights-build-artifacts
-        # This step will deploy the CDK stack without requiring manual approval.
-        # The `--verbose` flag provides detailed output during deployment.
