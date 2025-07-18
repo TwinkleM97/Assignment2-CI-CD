@@ -43,3 +43,4 @@ artifacts:
   files:
     - '**/*'
   name: banking-insights-build-artifacts
+# This will ensure that the deployment is automated without manual intervention.
